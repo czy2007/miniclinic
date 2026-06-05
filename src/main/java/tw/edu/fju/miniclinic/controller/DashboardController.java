@@ -34,7 +34,7 @@ public class DashboardController {
         // 撈取該醫師的所有預約資料送往前端
         model.addAttribute("doctor", doctor);
         model.addAttribute("appointments", appointmentRepo.findByDoctor(doctor));
-        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("today", LocalDate.now()); // 確保這行存在，HTML 才能顯示日期
         model.addAttribute("loggedInDoctorName", session.getAttribute("loggedInDoctorName"));
 
         return "dashboard"; // 返回 templates/dashboard.html
