@@ -15,6 +15,11 @@
         .status-BOOKED    { color: #F59E0B; font-weight: bold; }
         .status-COMPLETED { color: #10B981; font-weight: bold; }
         .status-CANCELLED { color: #94A3B8; }
+        
+        /* 新增按鈕的基本樣式，讓畫面稍微好看一點 */
+        .btn { padding: 4px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 4px; }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-success { background: #10B981; color: white; }
     </style>
 </head>
 <body>
@@ -54,34 +59,54 @@
                           th:class="${'status-' + appt.status}">BOOKED</span>
                 </td>
                 <td>
-                    <!-- 僅顯示 BOOKED 狀態才有的取消按鈕 -->
                     <button th:if="${appt.status == 'BOOKED'}"
                             th:data-id="${appt.apptId}"
+                            class="btn btn-danger"
                             onclick="cancelAppointment(this)">取消</button>
+
+                    <button th:if="${appt.status == 'BOOKED'}"
+                            th:data-id="${appt.apptId}"
+                            class="btn btn-success"
+                            onclick="completeAppointment(this)">看診完成</button>
                 </td>
             </tr>
         </tbody>
     </table>
-        <p style="text-align: center; margin-top: 20px;">
+    
+    <p style="text-align: center; margin-top: 20px;">
         <a th:href="@{/}">← 回首頁</a>
     </p>
 
     <script>
+        // 取消按鈕邏輯
         function cancelAppointment(btn) {
             const apptId = btn.getAttribute('data-id');
             if (!confirm('確定要取消這筆預約嗎？')) return;
 
+            updateAppointmentStatus(apptId, 'CANCELLED', '已成功取消', '取消失敗，請稍後再試');
+        }
+
+        // 【新增】看診完成按鈕邏輯
+        function completeAppointment(btn) {
+            const apptId = btn.getAttribute('data-id');
+            if (!confirm('確定要將此掛號狀態改為「看診完成」嗎？')) return;
+
+            updateAppointmentStatus(apptId, 'COMPLETED', '看診完成！', '操作失敗，請稍後再試');
+        }
+
+        // 【優化】封裝重複的 fetch 邏輯
+        function updateAppointmentStatus(apptId, status, successMsg, failMsg) {
             fetch(`/api/appointments/${apptId}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'CANCELLED' })
+                body: JSON.stringify({ status: status })
             })
             .then(response => {
                 if (response.ok) {
-                    alert('已成功取消');
+                    alert(successMsg);
                     location.reload();
                 } else {
-                    alert('取消失敗，請稍後再試');
+                    alert(failMsg);
                 }
             })
             .catch(err => {
@@ -91,5 +116,4 @@
         }
     </script>
 </body>
-
 </html>
