@@ -35,7 +35,6 @@ public class DashboardController {
         model.addAttribute("doctor", doctor);
         model.addAttribute("appointments", appointmentRepo.findByDoctor(doctor));
         model.addAttribute("today", LocalDate.now()); // 確保這行存在，HTML 才能顯示日期
-        model.addAttribute("loggedInDoctorName", session.getAttribute("loggedInDoctorName"));
 
         return "dashboard"; // 返回 templates/dashboard.html
     }
