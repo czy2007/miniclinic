@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import tw.edu.fju.miniclinic.model.AppointmentRepository;
 import tw.edu.fju.miniclinic.model.Doctor;
 import tw.edu.fju.miniclinic.model.DoctorRepository;
+import java.time.LocalDate;
 
 @Controller
 public class DashboardController {
@@ -33,6 +34,7 @@ public class DashboardController {
         // 撈取該醫師的所有預約資料送往前端
         model.addAttribute("doctor", doctor);
         model.addAttribute("appointments", appointmentRepo.findByDoctor(doctor));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("loggedInDoctorName", session.getAttribute("loggedInDoctorName"));
 
         return "dashboard"; // 返回 templates/dashboard.html
